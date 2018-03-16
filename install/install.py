@@ -9,27 +9,27 @@ import sys
 def usage():
     print("""Usage: install.py DBNAME""")
 
-if not sys.argv[1]:
-    usage()
-    sys.exit(2)
 
 
 def main(args):
+    if not args:
+        usage()
+
+        raise Exception("No filename given")
+
+    filename=args[0]
     sql_src_dir=os.path.dirname(os.path.realpath(__file__))
-
     
-    dest_file=os.path.join(os.path.dirname(os.path.realpath(__file__)),"..","var",sys.argv[1])
+    dest_file=os.path.join(os.path.dirname(os.path.realpath(__file__)),"..","var",filename)
 
-    if not os.path.isdir(os.path.dirname(dest_file)):
-        
-        os.makedirs(os.path.dirname(dest_file))
-            
+    if not os.path.isdir(os.path.dirname(dest_file)):        
+        os.makedirs(os.path.dirname(dest_file))            
     
 
     try:
         dbconn=sqlite3.connect(dest_file)
     except sqlite3.OperationalError as e:
-        raise sqlite3.OperationalError(e)
+        raise sqlite3.OperationalError(str(e)+" file: {0}".format(dest_file))
 
     schema_file=os.path.join(sql_src_dir,"fattybrewery-schema.sql")
     init_file=os.path.join(sql_src_dir,"fattybrewery-init.sql")
@@ -43,7 +43,7 @@ def main(args):
             sql=sfh.read()
             dbconn.executescript(sql)
     
-    
+    dbconn.close()
 
 if __name__=='__main__':
     main(sys.argv[1:])

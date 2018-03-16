@@ -125,8 +125,6 @@ batch_status TEXT,
 FOREIGN KEY(batch_status) REFERENCES batch_status(status)
 );
 
-
-
 DROP TABLE if exists ingredients;
 CREATE TABLE ingredients
 ( 
@@ -195,12 +193,15 @@ DROP TABLE if exists containers;
 CREATE TABLE containers
 (
 id INTEGER PRIMARY KEY,
+name TEXT UNIQUE,
 total_volume REAL,
 total_volume_units VARCHAR default "C",
 current_volume REAL default 0,
 current_volume_units VARCHAR default "L",
 target_temperature REAL DEFAULT 20,
 target_temperature_units VARCHAR DEFAULT 'C',
+current_temperature REAL DEFAULT 20,
+current_temperature_units VARCHAR DEFAULT 'C',
 clean INTEGER DEFAULT 0,
 FOREIGN KEY(total_volume_units) REFERENCES measure_units(unit),
 FOREIGN KEY(current_volume_units) REFERENCES measure_units(unit),
@@ -276,6 +277,7 @@ BEGIN UPDATE container SET clean=1 WHERE container_contents.container=container.
 DROP TABLE if exists mash_tuns;
 CREATE TABLE mash_tuns
 (
+id INTEGER PRIMARY KEY,
 container INTEGER,
 FOREIGN KEY(container) REFERENCES containers(id)
 );
