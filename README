@@ -1,22 +1,17 @@
 Fatty Brewing.
+-----------------
 
-The controller is ambiguous. It can cause fattyworker to do work via APIs or messages.
+This is a project intended to be used for simulating beer brewing. It can be considered abandoned.
 
-It is a message publisher, and a message receiver (subscriber).
 
-The worker is a message reciever and a message publisher.
+Intended design
+----------------
 
-The broker is on the worker. It is like the fpga controlling the brewery.
+Message publication and subscription would be used to control the components of the beer brewery. 
 
-The subscribers are the different deciders of the brewery. 
-They are each associated with a physical operation via one or more controlled components.
+For example:
 
-The subscriber components are capable of processing the work order to perform actions. 
-
-For example, the different subscribers may receive the following orders:
-
-Mash tun receives work order to mash a brew, given a recipe and target temperatures for the different steps, and pass into a secondary. Passes it into holding tank.
--- This could be CouchDB database record for each step
+A mash tun receives work order to mash a brew, given a recipe and target temperatures for the different steps, and pass into a secondary. Passes it into holding tank.
 
 Mash tun, when completed, sends a message back to queue, on ferment-queue, that a specific holding tank has the wort. 
 This message also includes the original recipe and order number.
@@ -29,19 +24,15 @@ Message goes to fattypackaging queue, includes the holding tank(s), recipe, orde
 Package-controller then receives message from fattypackaging queue. 
 Package controller bottles per recipe and order number.
 
-All controllers also connected to order-change queue.
-Order-change queue can change parameters of the order at any time. 
-
 --Controller activites
 
 Mash tun controller, receives order including recipe.
-It takes ingredients, based on recipe, and puts them into a mash tun via a valve, probably magically.
+It takes ingredients, based on recipe, and puts them into a mash tun.
 It also adds appropriate temperature
 
 --Component tracking
 
 DB stores the status of each of the components
--- Note, Redis is fast
 
 INGREDIENTS:
 Hops:
@@ -104,12 +95,3 @@ PACKAGER
 Type Bottle/keg
 Use_status in use/ available
 Output_volume_hourly_rate
-
-
-
-SYSTEM_ARCHITECTURE
-
-mash_tun_controller app
-fermenter_controller app
-
-
